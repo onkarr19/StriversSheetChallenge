@@ -1,0 +1,40 @@
+name: File Comment Check
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  check_files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check file comments
+        run: |
+          set -e
+
+          # Loop through each modified file
+          for file in $(git diff --name-only HEAD^..HEAD); do
+            # Extract the first line of the file
+            first_line=$(head -n 1 "$file")
+
+            # Check if the first line matches the expected comment format
+            if [[ $first_line != "/*" && $first_line != "*/" ]]; then
+              echo "Error: $file does not contain the required comment."
+              exit 1
+            fi
+
+            # Extract the problem link from the comment
+            problem_link=$(grep -oP "(?<=Problem Link: ).*" "$file")
+
+            # Check if the problem link is empty
+            if [[ -z $problem_link ]]; then
+              echo "Error: $file does not contain a problem link in the required comment format."
+              exit 1
+            fi
+          done
+
