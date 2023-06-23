@@ -1,3 +1,9 @@
+/*
+
+Problem Link: https://www.codingninjas.com/studio/problems/fractional-knapsack_8230767?challengeSlug=striver-sde-challenge
+
+*/
+
 #include <bits/stdc++.h> 
 double maximumValue (vector<pair<int, int>>& items, int n, int w)
 {
